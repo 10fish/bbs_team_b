@@ -14,9 +14,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
-import sun.security.acl.PrincipalImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -39,8 +37,6 @@ public class PostControllerTest {
     private Principal principal;
     private Model model;
     private RedirectAttributesModelMap redirectAttributesModelMap;
-    private ModelAndView expected;
-    private String result;
     private ModelMap modelMap;
     private Long PostId;
     private Post post;
@@ -64,7 +60,8 @@ public class PostControllerTest {
         when(request.getParameter("parentId")).thenReturn("0");
 
 
-        principal = new PrincipalImpl("name");
+        principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("name");
 
         postController = new PostController(postService,userService,likeService);
         PostId=1L;
@@ -123,6 +120,6 @@ public class PostControllerTest {
     public void shouldTopPostWhenTopPost() throws Exception {
         Post post = new Post().setPostId(1L);
         postController.processTopPost(1L, principal);
-        verify(postService).topPost(1L);
+        verify(postService).topPost(post.getPostId());
     }
 }
